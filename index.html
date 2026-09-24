@@ -18,41 +18,48 @@
     --muted: #8b99a7;
     --ok: #5cc8f0;
     --warn: #ffb020;
-    --over: #ff5a4e;
     --display: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
     --body: "IBM Plex Sans Thai", "Leelawadee UI", Thonburi, system-ui, sans-serif;
   }
   html, body { background: var(--ground); color: var(--ink); }
   body { font-family: var(--body); font-size: 15px; line-height: 1.6; padding-inline: 16px; padding-block: 28px 56px; }
-  .wrap { max-width: 640px; margin: 0 auto; display: grid; gap: 22px; }
+  .wrap { max-width: 680px; margin: 0 auto; display: grid; gap: 22px; }
 
   header h1 { margin: 0; font-size: 22px; font-weight: 600; text-wrap: balance; }
   header p { margin: 4px 0 0; color: var(--muted); max-width: 62ch; }
 
-  /* ตัวอย่างหน้าต่างลอย ขนาดใกล้ของจริง */
-  .preview { display: grid; gap: 8px; justify-items: start; }
+  .preview { display: grid; gap: 8px; }
   .cap { font-size: 13px; color: var(--muted); }
-  .chip { --c: var(--ok); position: relative; display: inline-flex; align-items: baseline; gap: 6px; background: var(--screen); border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px 9px; transition: background .3s; }
-  .chip[data-c="warn"] { --c: var(--warn); }
-  .chip[data-c="over"] { --c: var(--over); background: #3a0f0c; }
-  .chip .k { font-size: 11px; color: var(--muted); }
-  .chip .v { font: 500 18px/1 var(--display); font-variant-numeric: tabular-nums; }
-  .chip .r { color: var(--c); font-weight: 600; }
-  .chip .gap { width: 8px; }
-  .chip .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--line); border-radius: 0 0 8px 8px; overflow: hidden; }
-  .chip .bar i { display: block; height: 100%; width: 0; background: var(--c); transition: width .25s linear; }
+  .stage { overflow-x: auto; padding: 18px; border: 1px dashed var(--line); border-radius: 12px; background: repeating-conic-gradient(#141a21 0 25%, #11161c 0 50%) 0 0 / 16px 16px; }
   .status { font-size: 13px; color: var(--muted); }
   .status b { font-weight: 600; color: var(--ink); }
 
-  /* แผงควบคุม */
-  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 16px; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 20px; }
+  .group { display: grid; gap: 10px; }
+  .group + .group { border-top: 1px solid var(--line); padding-top: 18px; }
+  .group h2 { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
   .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
   label.f { display: grid; gap: 6px; font-size: 13px; color: var(--muted); }
   .num { display: flex; align-items: stretch; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--screen); }
   .num input { flex: 1; min-width: 0; width: 100%; background: transparent; border: 0; color: var(--ink); font: 600 20px/1 var(--display); padding: 10px 12px; text-align: center; }
   .num button { background: transparent; color: var(--ink); border: 0; width: 44px; font: 600 18px/1 var(--body); cursor: pointer; }
   .num button:hover { background: var(--line); }
-  .num input:focus-visible, .num button:focus-visible { outline: 2px solid var(--ok); outline-offset: -2px; }
+  :is(.num input, .num button, input[type="range"], input[type="color"], .chk input, .swatch):focus-visible { outline: 2px solid var(--ok); outline-offset: 2px; }
+
+  .checks { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chk { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px 7px 10px; background: var(--screen); cursor: pointer; user-select: none; }
+  .chk input { accent-color: var(--ok); width: 16px; height: 16px; margin: 0; }
+  .chk:has(input:checked) { border-color: var(--ok); }
+  .hint { margin: 0; font-size: 13px; color: var(--muted); }
+
+  .size { display: flex; align-items: center; gap: 12px; }
+  .size input { flex: 1; accent-color: var(--ok); }
+  .size output { font: 600 15px/1 var(--display); min-width: 4.5ch; text-align: right; }
+  .colors { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; }
+  .color { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+  .color input { width: 40px; height: 30px; padding: 0; border: 1px solid var(--line); border-radius: 6px; background: none; cursor: pointer; }
+  .swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+  .swatch { border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font: 600 14px/1 var(--display); cursor: pointer; }
 
   .actions { display: flex; flex-wrap: wrap; gap: 10px; }
   .btn { font: 600 15px/1 var(--body); border-radius: 10px; padding: 13px 18px; cursor: pointer; border: 1px solid var(--line); background: var(--screen); color: var(--ink); }
@@ -62,15 +69,14 @@
   .btn.primary:hover { filter: brightness(1.08); }
   .btn.grow { flex: 1 1 200px; }
   .msg { margin: 0; font-size: 14px; color: var(--warn); }
+  .linkish { background: none; border: 0; padding: 0; font: inherit; color: var(--muted); text-decoration: underline; cursor: pointer; }
+  .linkish:hover, .linkish:focus-visible { color: var(--ink); }
 
-  /* วิธีใช้ */
   .how h2 { margin: 0 0 8px; font-size: 16px; font-weight: 600; }
   .how ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; max-width: 64ch; }
   .how li::marker { color: var(--ok); font-weight: 600; }
   .how .note { margin: 12px 0 0; color: var(--muted); font-size: 14px; max-width: 64ch; }
   kbd { font-family: var(--display); font-size: 12px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px; color: var(--ink); }
-
-  @media (prefers-reduced-motion: reduce) { .chip, .chip .bar i { transition: none; } }
 </style>
 
 <style>body{margin:0}</style>
@@ -79,37 +85,62 @@
 <div class="wrap">
   <header>
     <h1>นาฬิกาจับเวลานำเสนอ</h1>
-    <p>หน้าต่างจับเวลาเล็ก ๆ ที่ลอยทับสไลด์ แสดงเวลาที่ใช้ไปกับเวลาที่เหลือ ผู้เข้าประชุมใน Zoom เห็นได้เมื่อแชร์หน้าจอ</p>
+    <p>หน้าต่างจับเวลาเล็ก ๆ ที่ลอยทับสไลด์ ผู้เข้าประชุมใน Zoom เห็นได้เมื่อแชร์ทั้งหน้าจอ</p>
   </header>
 
   <section class="preview" aria-label="ตัวอย่างหน้าต่างลอย">
-    <div class="cap">หน้าตาหน้าต่างลอย</div>
-    <div class="chip" data-c="ok">
-      <span class="k">ใช้ไป</span><span class="v" data-f="e">00:00</span>
-      <span class="gap"></span>
-      <span class="k" data-f="rl">เหลือ</span><span class="v r" data-f="r">20:00</span>
-      <span class="bar"><i data-f="bar"></i></span>
-    </div>
+    <div class="cap">หน้าตาหน้าต่างลอย (ขนาดจริง)</div>
+    <div class="stage" id="stage"></div>
     <div class="status"><span data-f="st">ยังไม่เริ่ม</span> · ทั้งหมด <b data-f="tot">20 นาที</b></div>
   </section>
 
   <section class="panel" aria-label="ตั้งค่าและควบคุม">
-    <div class="fields">
-      <label class="f" for="min">เวลาทั้งหมด (นาที)
-        <span class="num">
-          <button type="button" id="min-dn" aria-label="ลด 1 นาที">−</button>
-          <input id="min" type="number" inputmode="numeric" min="1" max="600" step="1" value="20">
-          <button type="button" id="min-up" aria-label="เพิ่ม 1 นาที">+</button>
-        </span>
-      </label>
-      <label class="f" for="warn">เปลี่ยนเป็นสีส้มเมื่อเหลือ (นาที)
-        <span class="num">
-          <button type="button" id="warn-dn" aria-label="ลด 1 นาที">−</button>
-          <input id="warn" type="number" inputmode="numeric" min="0" max="60" step="1" value="2">
-          <button type="button" id="warn-up" aria-label="เพิ่ม 1 นาที">+</button>
-        </span>
-      </label>
+    <div class="group">
+      <h2>เวลา</h2>
+      <div class="fields">
+        <label class="f" for="min">เวลาทั้งหมด (นาที)
+          <span class="num">
+            <button type="button" id="min-dn" aria-label="ลด 1 นาที">−</button>
+            <input id="min" type="number" inputmode="numeric" min="1" max="600" step="1" value="20">
+            <button type="button" id="min-up" aria-label="เพิ่ม 1 นาที">+</button>
+          </span>
+        </label>
+        <label class="f" for="warn">เปลี่ยนเป็นสีส้มเมื่อเหลือ (นาที)
+          <span class="num">
+            <button type="button" id="warn-dn" aria-label="ลด 1 นาที">−</button>
+            <input id="warn" type="number" inputmode="numeric" min="0" max="60" step="1" value="2">
+            <button type="button" id="warn-up" aria-label="เพิ่ม 1 นาที">+</button>
+          </span>
+        </label>
+      </div>
     </div>
+
+    <div class="group">
+      <h2>สิ่งที่แสดง</h2>
+      <div class="checks">
+        <label class="chk"><input type="checkbox" id="show-e" checked> เวลาที่ใช้ไป (Stopwatch)</label>
+        <label class="chk"><input type="checkbox" id="show-r" checked> เวลาที่เหลือ (นับถอยหลัง)</label>
+        <label class="chk"><input type="checkbox" id="show-c"> เวลาปัจจุบัน (Clock)</label>
+      </div>
+      <div class="checks">
+        <label class="chk"><input type="checkbox" id="show-k" checked> คำกำกับ (ใช้ไป / เหลือ / เวลา)</label>
+        <label class="chk"><input type="checkbox" id="show-bar" checked> แถบความคืบหน้า</label>
+      </div>
+      <p class="hint" id="show-hint" hidden>ต้องเลือกอย่างน้อย 1 อย่าง</p>
+    </div>
+
+    <div class="group">
+      <h2>ขนาดและสี</h2>
+      <label class="f" for="fs">ขนาดตัวเลข
+        <span class="size"><input type="range" id="fs" min="12" max="72" step="1" value="24"><output id="fs-out" for="fs">24 px</output></span>
+      </label>
+      <div class="colors">
+        <label class="color" for="bg">สีพื้น <input type="color" id="bg" value="#0a0e12"></label>
+        <label class="color" for="fg">สีตัวอักษร <input type="color" id="fg" value="#e7edf2"></label>
+        <div class="swatches" id="swatches" aria-label="ชุดสีสำเร็จรูป"></div>
+      </div>
+    </div>
+
     <div class="actions">
       <button type="button" class="btn primary grow" id="pip">เปิดหน้าต่างลอย</button>
       <button type="button" class="btn" id="toggle">เริ่ม</button>
@@ -121,12 +152,12 @@
   <section class="how">
     <h2>วิธีใช้กับ Zoom</h2>
     <ol>
-      <li>ตั้งเวลาทั้งหมด แล้วกด <b>เปิดหน้าต่างลอย</b></li>
-      <li>ลากหน้าต่างลอยไปไว้มุมจอ ถ้าอยากให้เล็กหรือใหญ่ขึ้น ดึงที่ขอบหน้าต่างได้ ตัวเลขจะปรับขนาดตาม</li>
-      <li>ใน Zoom กด <b>Share Screen</b> แล้วเลือก <b>Screen</b> (ทั้งหน้าจอ) หรือ <b>Portion of Screen</b> (บางส่วนของจอ ในแท็บ Advanced) อย่าเลือกแชร์หน้าต่าง PowerPoint อย่างเดียว</li>
+      <li>เลือกสิ่งที่จะแสดง ขนาด และสี แล้วกด <b>เปิดหน้าต่างลอย</b></li>
+      <li>ลากหน้าต่างลอยไปไว้มุมจอ ถ้าหน้าต่างเล็กกว่าตัวเลข ตัวเลขจะย่อลงให้พอดีเอง</li>
+      <li>ใน Zoom กด <b>Share Screen</b> แล้วเลือก <b>Screen</b> (ทั้งหน้าจอ) อย่าเลือกแชร์หน้าต่าง PowerPoint อย่างเดียว</li>
       <li>เปิดสไลด์โชว์ แล้วกดปุ่ม ▶ จาง ๆ ท้ายหน้าต่างลอยเพื่อเริ่มจับเวลา</li>
     </ol>
-    <p class="note">เมื่อเวลาหมด ตัวเลขจะนับต่อเป็นเวลาที่เกิน และพื้นเปลี่ยนเป็นสีแดง คีย์ลัดบนหน้านี้: <kbd>Space</kbd> เริ่ม/หยุด, <kbd>R</kbd> รีเซ็ต · ใช้ได้กับ Chrome หรือ Edge บนคอมพิวเตอร์</p>
+    <p class="note">ปรับขนาดหรือสีระหว่างที่หน้าต่างลอยเปิดอยู่ได้ หน้าต่างจะเปลี่ยนตามทันที เมื่อเวลาหมด เวลาที่เหลือจะเปลี่ยนเป็นสีแดงและนับเวลาที่เกินต่อ คีย์ลัดบนหน้านี้: <kbd>Space</kbd> เริ่ม/หยุด, <kbd>R</kbd> รีเซ็ต · ใช้ได้กับ Chrome หรือ Edge บนคอมพิวเตอร์ ระบบจำค่าที่ตั้งไว้ในเบราว์เซอร์นี้</p>
   </section>
 </div>
 
@@ -134,16 +165,69 @@
 (() => {
   const $ = (id) => document.getElementById(id);
   const MIN = 60000;
-  const S = { total: 20 * MIN, warn: 2 * MIN, acc: 0, t0: 0, running: false };
 
-  try {
-    const saved = JSON.parse(localStorage.getItem("stageTimer") || "{}");
-    if (saved.min >= 1) S.total = saved.min * MIN;
-    if (saved.warn >= 0) S.warn = saved.warn * MIN;
-  } catch (e) {}
-  const save = () => { try { localStorage.setItem("stageTimer", JSON.stringify({ min: S.total / MIN, warn: S.warn / MIN })); } catch (e) {} };
+  // ---------- ค่าตั้ง ----------
+  const DEF = { min: 20, warn: 2, fs: 24, bg: "#0a0e12", fg: "#e7edf2", e: true, r: true, c: false, k: true, bar: true };
+  const O = { ...DEF };
+  try { Object.assign(O, JSON.parse(localStorage.getItem("stageTimer2") || "{}")); } catch (e) {}
+  const save = () => { try { localStorage.setItem("stageTimer2", JSON.stringify(O)); } catch (e) {} };
 
-  const elapsed = () => S.acc + (S.running ? Date.now() - S.t0 : 0);
+  const T = { acc: 0, t0: 0, running: false };
+  const total = () => O.min * MIN;
+
+  // ---------- หน้าตาตัวจับเวลา (ใช้ร่วมกันทั้งตัวอย่างและหน้าต่างลอย) ----------
+  const TW_CSS = `
+    .tw{--fs:24px;--bg:#0a0e12;--fg:#e7edf2;--warn:#ffb020;--over:#ff5a4e;--rc:var(--fg);
+      position:relative;display:inline-block;box-sizing:border-box;background:var(--bg);color:var(--fg);
+      font-size:var(--fs);line-height:1;padding:.38em .6em .5em;white-space:nowrap;transform-origin:center}
+    .tw[data-c="warn"]{--rc:var(--warn)}
+    .tw[data-c="over"]{--rc:var(--over)}
+    .tw .row{display:flex;align-items:baseline;gap:.7em}
+    .tw .it{display:inline-flex;align-items:baseline;gap:.28em}
+    .tw .k{font:400 .44em/1 "IBM Plex Sans Thai","Leelawadee UI",Thonburi,system-ui,sans-serif;opacity:.62}
+    .tw .v{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;font-weight:500;font-variant-numeric:tabular-nums}
+    .tw .r{color:var(--rc);font-weight:600}
+    .tw .bar{position:absolute;left:0;right:0;bottom:0;height:max(2px,.12em);background:color-mix(in srgb,var(--fg) 18%,transparent)}
+    .tw .bar i{display:block;height:100%;width:0;background:var(--rc);transition:width .25s linear}
+    .tw .tg{align-self:center;border:0;border-radius:4px;background:transparent;color:inherit;opacity:.28;font:.42em/1 system-ui,sans-serif;padding:.25em .35em;margin-left:-.3em;cursor:pointer}
+    .tw .tg:hover,.tw .tg:focus-visible{opacity:1;background:color-mix(in srgb,var(--fg) 15%,transparent);outline:none}
+    .tw.no-e [data-show="e"],.tw.no-r [data-show="r"],.tw.no-c [data-show="c"],.tw.no-k .k,.tw.no-bar .bar{display:none}
+    .tw.no-bar{padding-bottom:.38em}
+    @media (prefers-reduced-motion:reduce){.tw .bar i{transition:none}}`;
+  const TW_HTML = `
+    <div class="tw" data-c="ok">
+      <div class="row">
+        <span class="it" data-show="e"><span class="k">ใช้ไป</span><span class="v" data-f="e">00:00</span></span>
+        <span class="it" data-show="r"><span class="k" data-f="rl">เหลือ</span><span class="v r" data-f="r">20:00</span></span>
+        <span class="it" data-show="c"><span class="k">เวลา</span><span class="v" data-f="c">00:00</span></span>
+        <button class="tg" type="button" title="เริ่ม">▶</button>
+      </div>
+      <span class="bar"><i data-f="bar"></i></span>
+    </div>`;
+
+  const st = document.createElement("style");
+  st.textContent = TW_CSS;
+  document.head.append(st);
+  $("stage").innerHTML = TW_HTML;
+
+  // สีเตือนที่อ่านออกทั้งบนพื้นมืดและพื้นสว่าง
+  function lum(hex) {
+    const n = parseInt(hex.slice(1), 16);
+    const ch = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; });
+    return .2126 * ch[0] + .7152 * ch[1] + .0722 * ch[2];
+  }
+  function styleWidget(tw) {
+    const light = lum(O.bg) > .35;
+    tw.style.setProperty("--fs", O.fs + "px");
+    tw.style.setProperty("--bg", O.bg);
+    tw.style.setProperty("--fg", O.fg);
+    tw.style.setProperty("--warn", light ? "#b35f00" : "#ffb020");
+    tw.style.setProperty("--over", light ? "#c62828" : "#ff5a4e");
+    for (const k of ["e", "r", "c", "k", "bar"]) tw.classList.toggle("no-" + k, !O[k]);
+  }
+
+  // ---------- เวลา ----------
+  const elapsed = () => T.acc + (T.running ? Date.now() - T.t0 : 0);
   const pad = (n) => String(n).padStart(2, "0");
   const clock = (sec) => {
     const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
@@ -151,40 +235,58 @@
   };
 
   function snapshot() {
-    const e = elapsed(), rem = S.total - e;
+    const e = elapsed(), rem = total() - e;
     const over = rem <= 0 && e > 0;
-    const c = over ? "over" : rem <= S.warn && e > 0 ? "warn" : "ok";
+    const now = new Date();
     return {
       e: clock(Math.floor(e / 1000)),
       r: over ? "+" + clock(Math.floor(-rem / 1000)) : clock(Math.ceil(rem / 1000)),
       rl: over ? "เกิน" : "เหลือ",
-      pct: Math.min(100, (e / S.total) * 100),
-      c,
-      st: over ? "หมดเวลาแล้ว" : S.running ? "กำลังจับเวลา" : e > 0 ? "หยุดชั่วคราว" : "ยังไม่เริ่ม",
-      tot: S.total / MIN + " นาที",
+      c: `${pad(now.getHours())}:${pad(now.getMinutes())}`,
+      pct: Math.min(100, (e / total()) * 100),
+      cst: over ? "over" : rem <= O.warn * MIN && e > 0 ? "warn" : "ok",
+      st: over ? "หมดเวลาแล้ว" : T.running ? "กำลังจับเวลา" : e > 0 ? "หยุดชั่วคราว" : "ยังไม่เริ่ม",
+      tot: O.min + " นาที",
     };
   }
 
   function fill(root, v) {
     const set = (k, t) => root.querySelectorAll(`[data-f="${k}"]`).forEach((n) => { if (n.textContent !== t) n.textContent = t; });
-    set("e", v.e); set("r", v.r); set("rl", v.rl); set("st", v.st); set("tot", v.tot);
+    set("e", v.e); set("r", v.r); set("rl", v.rl); set("c", v.c); set("st", v.st); set("tot", v.tot);
     root.querySelectorAll('[data-f="bar"]').forEach((n) => (n.style.width = v.pct + "%"));
-    root.querySelectorAll("[data-c]").forEach((n) => (n.dataset.c = v.c));
+    root.querySelectorAll(".tw").forEach((n) => (n.dataset.c = v.cst));
+    root.querySelectorAll(".tw .tg").forEach((b) => { b.textContent = T.running ? "❚❚" : "▶"; b.title = T.running ? "หยุดชั่วคราว" : "เริ่ม"; });
   }
 
   let pipWin = null, video = null, canvas = null;
 
+  function fitPip() {
+    if (!pipWin) return;
+    const tw = pipWin.document.querySelector(".tw");
+    if (!tw) return;
+    const s = Math.min(1, (pipWin.innerWidth - 2) / tw.offsetWidth, (pipWin.innerHeight - 2) / tw.offsetHeight);
+    tw.style.transform = s < 1 ? `scale(${s})` : "";
+  }
+
   function render() {
     const v = snapshot();
     fill(document, v);
-    if (pipWin) {
-      fill(pipWin.document, v);
-      const b = pipWin.document.getElementById("p-toggle");
-      if (b) { b.textContent = S.running ? "❚❚" : "▶"; b.title = S.running ? "หยุดชั่วคราว" : "เริ่ม"; }
-    }
+    if (pipWin) { fill(pipWin.document, v); fitPip(); }
     if (video && document.pictureInPictureElement === video) draw(v);
-    $("toggle").textContent = S.running ? "หยุดชั่วคราว" : elapsed() > 0 ? "ทำต่อ" : "เริ่ม";
+    $("toggle").textContent = T.running ? "หยุดชั่วคราว" : elapsed() > 0 ? "ทำต่อ" : "เริ่ม";
     $("pip").textContent = pipWin || (video && document.pictureInPictureElement === video) ? "ปิดหน้าต่างลอย" : "เปิดหน้าต่างลอย";
+  }
+
+  function applyLook() {
+    document.querySelectorAll(".tw").forEach(styleWidget);
+    if (pipWin) {
+      pipWin.document.querySelectorAll(".tw").forEach(styleWidget);
+      pipWin.document.body.style.background = O.bg;
+      // พยายามปรับขนาดหน้าต่างให้พอดี ถ้าเบราว์เซอร์ไม่ยอม ตัวเลขจะย่อให้พอดีหน้าต่างแทน
+      const tw = document.querySelector("#stage .tw");
+      try { pipWin.resizeTo(tw.offsetWidth + (pipWin.outerWidth - pipWin.innerWidth), tw.offsetHeight + (pipWin.outerHeight - pipWin.innerHeight)); } catch (e) {}
+    }
+    render();
   }
 
   // ตัวจังหวะที่ไม่ถูกเบราว์เซอร์ชะลอเมื่อหน้าต่างถูกบัง
@@ -196,32 +298,64 @@
     w.onerror = startFallback;
   } catch (e) { startFallback(); }
 
+  // ---------- ควบคุม ----------
   function toggle() {
-    if (S.running) { S.acc += Date.now() - S.t0; S.running = false; }
-    else { S.t0 = Date.now(); S.running = true; }
+    if (T.running) { T.acc += Date.now() - T.t0; T.running = false; }
+    else { T.t0 = Date.now(); T.running = true; }
     render();
   }
-  function reset() { S.acc = 0; S.running = false; render(); }
+  function reset() { T.acc = 0; T.running = false; render(); }
 
-  function setTotal(m) {
-    m = Math.max(1, Math.min(600, Math.round(m) || 1));
-    S.total = m * MIN; $("min").value = m; save(); render();
-  }
-  function setWarn(m) {
-    m = Math.max(0, Math.min(60, Math.round(m) || 0));
-    S.warn = m * MIN; $("warn").value = m; save(); render();
-  }
+  function setMin(m) { O.min = Math.max(1, Math.min(600, Math.round(m) || 1)); $("min").value = O.min; save(); render(); }
+  function setWarn(m) { O.warn = Math.max(0, Math.min(60, Math.round(m) || 0)); $("warn").value = O.warn; save(); render(); }
 
-  $("min").value = S.total / MIN;
-  $("warn").value = S.warn / MIN;
-  $("min").addEventListener("change", (e) => setTotal(+e.target.value));
+  $("min").addEventListener("change", (e) => setMin(+e.target.value));
   $("warn").addEventListener("change", (e) => setWarn(+e.target.value));
-  $("min-dn").onclick = () => setTotal(S.total / MIN - 1);
-  $("min-up").onclick = () => setTotal(S.total / MIN + 1);
-  $("warn-dn").onclick = () => setWarn(S.warn / MIN - 1);
-  $("warn-up").onclick = () => setWarn(S.warn / MIN + 1);
+  $("min-dn").onclick = () => setMin(O.min - 1);
+  $("min-up").onclick = () => setMin(O.min + 1);
+  $("warn-dn").onclick = () => setWarn(O.warn - 1);
+  $("warn-up").onclick = () => setWarn(O.warn + 1);
   $("toggle").onclick = toggle;
   $("reset").onclick = reset;
+  $("stage").addEventListener("click", (e) => { if (e.target.closest(".tg")) toggle(); });
+
+  // สิ่งที่แสดง
+  for (const k of ["e", "r", "c", "k", "bar"]) {
+    const box = $("show-" + k);
+    box.checked = !!O[k];
+    box.addEventListener("change", () => {
+      O[k] = box.checked;
+      if (!O.e && !O.r && !O.c) { O[k] = true; box.checked = true; $("show-hint").hidden = false; return; }
+      $("show-hint").hidden = true;
+      save(); applyLook();
+    });
+  }
+
+  // ขนาดและสี
+  $("fs").value = O.fs; $("fs-out").textContent = O.fs + " px";
+  $("fs").addEventListener("input", (e) => { O.fs = +e.target.value; $("fs-out").textContent = O.fs + " px"; applyLook(); });
+  $("fs").addEventListener("change", save);
+  $("bg").value = O.bg; $("fg").value = O.fg;
+  $("bg").addEventListener("input", (e) => { O.bg = e.target.value; applyLook(); });
+  $("fg").addEventListener("input", (e) => { O.fg = e.target.value; applyLook(); });
+  $("bg").addEventListener("change", save);
+  $("fg").addEventListener("change", save);
+
+  const PRESETS = [
+    { name: "กรมท่า", bg: "#0a0e12", fg: "#e7edf2" },
+    { name: "ดำ", bg: "#000000", fg: "#ffffff" },
+    { name: "ขาว", bg: "#ffffff", fg: "#1b2430" },
+    { name: "เหลือง", bg: "#141414", fg: "#ffd23f" },
+    { name: "เขียว", bg: "#0d2a1f", fg: "#b8f5d0" },
+  ];
+  for (const p of PRESETS) {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "swatch"; b.textContent = "12:34";
+    b.title = p.name; b.setAttribute("aria-label", "ชุดสี" + p.name);
+    b.style.background = p.bg; b.style.color = p.fg;
+    b.onclick = () => { O.bg = p.bg; O.fg = p.fg; $("bg").value = p.bg; $("fg").value = p.fg; save(); applyLook(); };
+    $("swatches").append(b);
+  }
 
   document.addEventListener("keydown", (e) => {
     if (e.target.closest && e.target.closest("input, button")) return;
@@ -229,73 +363,63 @@
     else if (e.key === "r" || e.key === "R" || e.key === "พ") reset();
   });
 
-  // ---------- หน้าต่างลอย (บรรทัดเดียว ตัวเลขปรับตามขนาดหน้าต่าง) ----------
-  const PIP_CSS = `
-    html,body{margin:0;height:100%;background:#0a0e12;color:#e7edf2;overflow:hidden}
-    .p{--c:#5cc8f0;--fs:min(8.6vw,50vh);box-sizing:border-box;height:100%;display:flex;align-items:center;justify-content:center;gap:.25em;padding:0 .3em;background:#0a0e12;position:relative;font-size:var(--fs);transition:background .3s}
-    .p[data-c="warn"]{--c:#ffb020}
-    .p[data-c="over"]{--c:#ff5a4e;background:#3a0f0c}
-    .k{white-space:nowrap;font:400 .42em/1 "IBM Plex Sans Thai","Leelawadee UI",Thonburi,system-ui,sans-serif;color:#8b99a7}
-    .v{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;font-weight:500;font-variant-numeric:tabular-nums;line-height:1;white-space:nowrap}
-    .r{color:var(--c);font-weight:600}
-    .gap{width:.35em}
-    .bar{position:absolute;left:0;right:0;bottom:0;height:max(2px,5vh);background:#26313d}
-    .bar i{display:block;height:100%;width:0;background:var(--c);transition:width .25s linear}
-    #p-toggle{margin-left:.15em;border:0;border-radius:4px;background:transparent;color:#e7edf2;opacity:.25;font:.4em/1 system-ui;padding:.2em .3em;cursor:pointer}
-    #p-toggle:hover,#p-toggle:focus-visible{opacity:1;background:#26313d;outline:none}`;
-  const PIP_HTML = `
-    <div class="p" data-c="ok">
-      <span class="k">ใช้ไป</span><span class="v" data-f="e">00:00</span>
-      <span class="gap"></span>
-      <span class="k" data-f="rl">เหลือ</span><span class="v r" data-f="r">20:00</span>
-      <button id="p-toggle" type="button" title="เริ่ม">▶</button>
-      <span class="bar"><i data-f="bar"></i></span>
-    </div>`;
-
+  // ---------- หน้าต่างลอย ----------
   async function openDocPip() {
-    const w = await window.documentPictureInPicture.requestWindow({ width: 260, height: 56 });
+    const tw = document.querySelector("#stage .tw");
+    const w = await window.documentPictureInPicture.requestWindow({ width: Math.ceil(tw.offsetWidth), height: Math.ceil(tw.offsetHeight) });
     const d = w.document;
     const link = d.createElement("link");
     link.rel = "stylesheet";
     link.href = "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Thai:wght@400&display=swap";
     const style = d.createElement("style");
-    style.textContent = PIP_CSS;
+    style.textContent = "html,body{margin:0;height:100%;overflow:hidden}body{display:flex;align-items:center;justify-content:center}" + TW_CSS;
     d.head.append(link, style);
     d.title = "เวลา";
-    d.body.innerHTML = PIP_HTML;
-    d.getElementById("p-toggle").onclick = toggle;
+    d.body.innerHTML = TW_HTML;
+    d.body.style.background = O.bg;
+    d.querySelector(".tg").onclick = toggle;
     d.addEventListener("keydown", (e) => { if (e.code === "Space") { e.preventDefault(); toggle(); } });
+    w.addEventListener("resize", fitPip);
     const tick = w.setInterval(render, 250);
     w.addEventListener("pagehide", () => { w.clearInterval(tick); pipWin = null; render(); });
     pipWin = w;
+    styleWidget(d.querySelector(".tw"));
     render();
   }
 
   // ทางสำรอง: วาดลงแคนวาสแล้วส่งเป็นวิดีโอ Picture-in-Picture
   function draw(v) {
     const ctx = canvas.getContext("2d"), W = canvas.width, H = canvas.height;
-    const col = { ok: "#5cc8f0", warn: "#ffb020", over: "#ff5a4e" }[v.c];
-    ctx.fillStyle = v.c === "over" ? "#3a0f0c" : "#0a0e12";
-    ctx.fillRect(0, 0, W, H);
+    const light = lum(O.bg) > .35;
+    const rc = v.cst === "over" ? (light ? "#c62828" : "#ff5a4e") : v.cst === "warn" ? (light ? "#b35f00" : "#ffb020") : O.fg;
+    ctx.fillStyle = O.bg; ctx.fillRect(0, 0, W, H);
     const sans = '"IBM Plex Sans Thai","Leelawadee UI",Thonburi,sans-serif';
     const mono = '"IBM Plex Mono",Menlo,Consolas,monospace';
-    ctx.textBaseline = "middle";
-    ctx.textAlign = "left";
-    let x = 22; const y = H / 2 - 3;
-    const put = (t, font, color) => { ctx.font = font; ctx.fillStyle = color; ctx.fillText(t, x, y); x += ctx.measureText(t).width; };
-    put("ใช้ไป ", `22px ${sans}`, "#8b99a7");
-    put(v.e, `500 46px ${mono}`, "#e7edf2");
-    x += 22;
-    put(v.rl + " ", `22px ${sans}`, "#8b99a7");
-    put(v.r, `600 46px ${mono}`, col);
-    ctx.fillStyle = "#26313d"; ctx.fillRect(0, H - 5, W, 5);
-    ctx.fillStyle = col; ctx.fillRect(0, H - 5, W * v.pct / 100, 5);
+    const items = [];
+    if (O.e) items.push(["ใช้ไป", v.e, O.fg, 500]);
+    if (O.r) items.push([v.rl, v.r, rc, 600]);
+    if (O.c) items.push(["เวลา", v.c, O.fg, 500]);
+    ctx.textBaseline = "middle"; ctx.textAlign = "left";
+    const y = H / 2 - 3;
+    let wsum = 0;
+    const parts = items.map(([k, t, col, wt]) => {
+      ctx.font = `20px ${sans}`; const kw = O.k ? ctx.measureText(k + " ").width : 0;
+      ctx.font = `${wt} 44px ${mono}`; const tw = ctx.measureText(t).width;
+      wsum += kw + tw; return { k, t, col, wt, kw, tw };
+    });
+    wsum += 28 * (parts.length - 1);
+    let x = Math.max(12, (W - wsum) / 2);
+    for (const p of parts) {
+      if (O.k) { ctx.font = `20px ${sans}`; ctx.globalAlpha = .62; ctx.fillStyle = O.fg; ctx.fillText(p.k, x, y); ctx.globalAlpha = 1; x += p.kw; }
+      ctx.font = `${p.wt} 44px ${mono}`; ctx.fillStyle = p.col; ctx.fillText(p.t, x, y); x += p.tw + 28;
+    }
+    if (O.bar) { ctx.globalAlpha = .18; ctx.fillStyle = O.fg; ctx.fillRect(0, H - 5, W, 5); ctx.globalAlpha = 1; ctx.fillStyle = rc; ctx.fillRect(0, H - 5, W * v.pct / 100, 5); }
   }
 
   async function openVideoPip() {
     if (!canvas) {
       canvas = document.createElement("canvas");
-      canvas.width = 440; canvas.height = 80;
+      canvas.width = 520; canvas.height = 80;
       video = document.createElement("video");
       video.muted = true; video.playsInline = true;
       video.style.cssText = "position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;bottom:0;left:0";
@@ -309,7 +433,19 @@
     render();
   }
 
-  function showMsg(t) { const m = $("msg"); m.textContent = t; m.hidden = !t; }
+  function showMsg(t, withFallback) {
+    const m = $("msg");
+    m.textContent = t;
+    if (withFallback) {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "linkish";
+      b.textContent = "ใช้หน้าต่างแบบสำรองแทน (ขนาดใหญ่ ปรับขนาดไม่ได้)";
+      b.onclick = async () => { try { await openVideoPip(); showMsg(""); } catch (e) { showMsg("เปิดหน้าต่างแบบสำรองไม่ได้ ให้เปิดไฟล์นี้ด้วย Chrome หรือ Edge โดยตรงแทน"); } };
+      m.append(" ", b);
+    }
+    m.hidden = !t;
+  }
+  const canVideoPip = () => document.pictureInPictureEnabled && !!HTMLCanvasElement.prototype.captureStream;
 
   $("pip").onclick = async () => {
     showMsg("");
@@ -318,13 +454,19 @@
     try {
       if ("documentPictureInPicture" in window) { await openDocPip(); return; }
     } catch (e) {}
+    if (window.top !== window.self) {
+      showMsg("หน้านี้ถูกฝังอยู่ในเว็บอื่น (เช่น Google Sites) เบราว์เซอร์จึงไม่ยอมเปิดหน้าต่างลอยขนาดเล็ก ให้เปิดลิงก์หรือไฟล์นี้ด้วย Chrome หรือ Edge โดยตรง", canVideoPip());
+      return;
+    }
     try {
-      if (document.pictureInPictureEnabled && HTMLCanvasElement.prototype.captureStream) { await openVideoPip(); return; }
+      if (canVideoPip()) { await openVideoPip(); return; }
     } catch (e) {}
-    showMsg("เปิดหน้าต่างลอยจากหน้านี้ไม่ได้ ให้เปิดไฟล์ stage-timer.html ด้วย Chrome หรือ Edge บนคอมพิวเตอร์แทน");
+    showMsg("เปิดหน้าต่างลอยจากหน้านี้ไม่ได้ ให้เปิดด้วย Chrome หรือ Edge บนคอมพิวเตอร์แทน");
   };
 
-  render();
+  $("min").value = O.min;
+  $("warn").value = O.warn;
+  applyLook();
 })();
 </script>
 </body>
