@@ -140,7 +140,7 @@
 <header class="topbar">
   <h1 class="brand">นาฬิกาจับเวลานำเสนอ</h1>
   <div class="tabs" role="tablist" aria-label="โหมด">
-    <button class="tab" role="tab" id="t-float" aria-controls="tab-float" aria-selected="true">หน้าต่างลอย</button>
+    <button class="tab" role="tab" id="t-float" aria-controls="tab-float" aria-selected="true">หน้าจอ pop up</button>
     <button class="tab" role="tab" id="t-cd" aria-controls="tab-cd" aria-selected="false">นับถอยหลังเต็มจอ</button>
   </div>
 </header>
@@ -151,7 +151,7 @@
   <p class="lead">หน้าต่างจับเวลาเล็ก ๆ ที่ลอยทับสไลด์ ผู้เข้าประชุมใน Zoom เห็นได้เมื่อแชร์ทั้งหน้าจอ</p>
 
   <section class="preview" aria-label="ตัวอย่างหน้าต่างลอย">
-    <div class="cap">หน้าตาหน้าต่างลอย (ขนาดจริง)</div>
+    <div class="cap">หน้าตา pop up (ขนาดจริง)</div>
     <div class="stage" id="stage"></div>
     <div class="status"><span data-f="st">ยังไม่เริ่ม</span> · ทั้งหมด <b data-f="tot">20 นาที</b></div>
   </section>
@@ -187,7 +187,7 @@
       <div class="checks">
         <label class="chk"><input type="checkbox" id="show-k" checked> คำกำกับ (ใช้ไป / เหลือ / เวลา)</label>
         <label class="chk"><input type="checkbox" id="show-bar" checked> แถบความคืบหน้า</label>
-        <label class="chk"><input type="checkbox" id="show-tg" checked> ปุ่ม ▶ ในหน้าต่างลอย</label>
+        <label class="chk"><input type="checkbox" id="show-tg" checked> ปุ่ม ▶ ในหน้า pop up</label>
       </div>
       <p class="hint warn" id="show-hint" hidden>ต้องเลือกอย่างน้อย 1 อย่าง</p>
       <p class="hint">อยากได้หน้าต่างเล็กที่สุด: ปิดคำกำกับ แถบความคืบหน้า และปุ่ม ▶ แล้วลดขนาดตัวเลข (เมื่อปิดปุ่ม ▶ ให้เริ่ม/หยุดจากหน้านี้แทน)</p>
@@ -206,7 +206,7 @@
     </div>
 
     <div class="actions">
-      <button type="button" class="btn primary grow" id="pip">เปิดหน้าต่างลอย</button>
+      <button type="button" class="btn primary grow" id="pip">เปิดหน้าจอ pop up</button>
       <button type="button" class="btn" id="toggle">เริ่ม</button>
       <button type="button" class="btn" id="reset">รีเซ็ต</button>
     </div>
@@ -216,12 +216,12 @@
   <section class="how">
     <h2>วิธีใช้กับ Zoom</h2>
     <ol>
-      <li>เลือกสิ่งที่จะแสดง ขนาด และสี แล้วกด <b>เปิดหน้าต่างลอย</b></li>
-      <li>ลากหน้าต่างลอยไปไว้มุมจอ ถ้าหน้าต่างเล็กกว่าตัวเลข ตัวเลขจะย่อลงให้พอดีเอง</li>
+      <li>เลือกสิ่งที่จะแสดง ขนาด และสี แล้วกด <b>เปิดหน้าจอ pop up</b></li>
+      <li>ลากหน้าจอ pop up ไปไว้มุมจอ ถ้าหน้าต่างเล็กกว่าตัวเลข ตัวเลขจะย่อลงให้พอดีเอง</li>
       <li>ใน Zoom กด <b>Share Screen</b> แล้วเลือก <b>Screen</b> (ทั้งหน้าจอ) อย่าเลือกแชร์หน้าต่าง PowerPoint อย่างเดียว</li>
-      <li>เปิดสไลด์โชว์ แล้วกดปุ่ม ▶ จาง ๆ ท้ายหน้าต่างลอยเพื่อเริ่มจับเวลา</li>
+      <li>เปิดสไลด์โชว์ แล้วกดปุ่ม ▶ จาง ๆ ท้ายหน้า pop up เพื่อเริ่มจับเวลา</li>
     </ol>
-    <p class="note">เบราว์เซอร์กำหนดขนาดเล็กสุดของหน้าต่างลอยไว้ และมีแถบชื่อเว็บด้านบนที่ปิดไม่ได้ ถ้าตัวเลขเล็กกว่าหน้าต่าง จะเห็นพื้นรอบตัวเลขกว้างขึ้น คีย์ลัดในแท็บนี้: <kbd>Space</kbd> เริ่ม/หยุด, <kbd>R</kbd> รีเซ็ต · ใช้ได้กับ Chrome หรือ Edge บนคอมพิวเตอร์</p>
+    <p class="note">เบราว์เซอร์กำหนดขนาดเล็กสุดของหน้า pop up ไว้ และมีแถบชื่อเว็บด้านบนที่ปิดไม่ได้ ถ้าตัวเลขเล็กกว่าหน้าต่าง จะเห็นพื้นรอบตัวเลขกว้างขึ้น คีย์ลัดในแท็บนี้: <kbd>Space</kbd> เริ่ม/หยุด, <kbd>R</kbd> รีเซ็ต · ใช้ได้กับ Chrome หรือ Edge บนคอมพิวเตอร์</p>
   </section>
 </div>
 </main>
