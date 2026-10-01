@@ -140,8 +140,8 @@
 <header class="topbar">
   <h1 class="brand">นาฬิกาจับเวลานำเสนอ</h1>
   <div class="tabs" role="tablist" aria-label="โหมด">
-    <button class="tab" role="tab" id="t-float" aria-controls="tab-float" aria-selected="true">หน้าจอ pop up</button>
-    <button class="tab" role="tab" id="t-cd" aria-controls="tab-cd" aria-selected="false">นับถอยหลังเต็มจอ</button>
+    <button class="tab" role="tab" id="t-float" aria-controls="tab-float" aria-selected="true">จับเวลาที่ใช้และเวลาที่เหลือ</button>
+    <button class="tab" role="tab" id="t-cd" aria-controls="tab-cd" aria-selected="false">แสดงการนับถอยหลังเต็มจอ</button>
   </div>
 </header>
 
@@ -150,7 +150,7 @@
 <div class="wrap">
   <p class="lead">หน้าต่างจับเวลาเล็ก ๆ ที่ลอยทับสไลด์ ผู้เข้าประชุมใน Zoom เห็นได้เมื่อแชร์ทั้งหน้าจอ</p>
 
-  <section class="preview" aria-label="ตัวอย่างหน้าต่างลอย">
+  <section class="preview" aria-label="ตัวอย่างหน้าจอ pop up">
     <div class="cap">หน้าตา pop up (ขนาดจริง)</div>
     <div class="stage" id="stage"></div>
     <div class="status"><span data-f="st">ยังไม่เริ่ม</span> · ทั้งหมด <b data-f="tot">20 นาที</b></div>
@@ -429,7 +429,7 @@
     if (pipWin) { fill(pipWin.document, v); fitPip(); }
     if (video && document.pictureInPictureElement === video) draw(v);
     $("toggle").textContent = T.running ? "หยุดชั่วคราว" : elapsed() > 0 ? "ทำต่อ" : "เริ่ม";
-    $("pip").textContent = pipWin || (video && document.pictureInPictureElement === video) ? "ปิดหน้าต่างลอย" : "เปิดหน้าต่างลอย";
+    $("pip").textContent = pipWin || (video && document.pictureInPictureElement === video) ? "ปิดหน้าจอ pop up" : "เปิดหน้าจอ pop up";
   }
   function applyLook() {
     document.querySelectorAll(".tw").forEach(styleWidget);
@@ -588,7 +588,7 @@
       return;
     }
     try { if (canVideoPip()) { await openVideoPip(); return; } } catch (e) {}
-    showMsg("เปิดหน้าต่างลอยจากหน้านี้ไม่ได้ ให้เปิดด้วย Chrome หรือ Edge บนคอมพิวเตอร์แทน");
+    showMsg("เปิดหน้าจอ pop up จากหน้านี้ไม่ได้ ให้เปิดด้วย Chrome หรือ Edge บนคอมพิวเตอร์แทน");
   };
 
   // =================== แท็บ 2: นับถอยหลังเต็มจอ ===================
