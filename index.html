@@ -6,7 +6,7 @@
 <title>นาฬิกาจับเวลานำเสนอ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Thai:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@600&family=IBM+Plex+Sans+Thai:wght@400;600&display=swap">
 <style>
   :root {
     color-scheme: dark;
@@ -22,12 +22,20 @@
     --body: "IBM Plex Sans Thai", "Leelawadee UI", Thonburi, system-ui, sans-serif;
   }
   html, body { background: var(--ground); color: var(--ink); }
-  body { font-family: var(--body); font-size: 15px; line-height: 1.6; padding-inline: 16px; padding-block: 28px 56px; }
-  .wrap { max-width: 680px; margin: 0 auto; display: grid; gap: 22px; }
+  body { font-family: var(--body); font-size: 15px; line-height: 1.6; min-height: 100dvh; display: flex; flex-direction: column; }
 
-  header h1 { margin: 0; font-size: 22px; font-weight: 600; text-wrap: balance; }
-  header p { margin: 4px 0 0; color: var(--muted); max-width: 62ch; }
+  /* แถบบน + แท็บ */
+  .topbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px 16px; padding-inline: 16px; padding-block: 10px; border-bottom: 1px solid var(--line); }
+  .brand { margin: 0; font-size: 16px; font-weight: 600; }
+  .tabs { display: inline-flex; gap: 2px; padding: 3px; background: var(--screen); border: 1px solid var(--line); border-radius: 10px; }
+  .tab { border: 0; background: transparent; color: var(--muted); font: 600 14px/1 var(--body); padding: 9px 14px; border-radius: 7px; cursor: pointer; }
+  .tab:hover { color: var(--ink); }
+  .tab[aria-selected="true"] { background: var(--line); color: var(--ink); }
+  .tab:focus-visible { outline: 2px solid var(--ok); outline-offset: 1px; }
 
+  /* ---------- แท็บ 1: หน้าต่างลอย ---------- */
+  .wrap { width: 100%; max-width: 680px; margin: 0 auto; display: grid; gap: 22px; padding-inline: 16px; padding-block: 24px 56px; box-sizing: border-box; }
+  .lead { margin: 0; color: var(--muted); max-width: 62ch; }
   .preview { display: grid; gap: 8px; }
   .cap { font-size: 13px; color: var(--muted); }
   .stage { overflow-x: auto; padding: 18px; border: 1px dashed var(--line); border-radius: 12px; background: repeating-conic-gradient(#141a21 0 25%, #11161c 0 50%) 0 0 / 16px 16px; }
@@ -37,24 +45,25 @@
   .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 20px; }
   .group { display: grid; gap: 10px; }
   .group + .group { border-top: 1px solid var(--line); padding-top: 18px; }
-  .group h2 { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-  .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+  .group h2, .drawer h3 { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: .08em; color: var(--muted); }
+  .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
   label.f { display: grid; gap: 6px; font-size: 13px; color: var(--muted); }
   .num { display: flex; align-items: stretch; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--screen); }
   .num input { flex: 1; min-width: 0; width: 100%; background: transparent; border: 0; color: var(--ink); font: 600 20px/1 var(--display); padding: 10px 12px; text-align: center; }
   .num button { background: transparent; color: var(--ink); border: 0; width: 44px; font: 600 18px/1 var(--body); cursor: pointer; }
   .num button:hover { background: var(--line); }
-  :is(.num input, .num button, input[type="range"], input[type="color"], .chk input, .swatch):focus-visible { outline: 2px solid var(--ok); outline-offset: 2px; }
+  :is(.num input, .num button, input[type="range"], input[type="color"], .chk input, .swatch, .chip):focus-visible { outline: 2px solid var(--ok); outline-offset: 2px; }
 
   .checks { display: flex; flex-wrap: wrap; gap: 8px; }
-  .chk { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px 7px 10px; background: var(--screen); cursor: pointer; user-select: none; }
+  .chk { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px 7px 10px; background: var(--screen); cursor: pointer; user-select: none; font-size: 14px; }
   .chk input { accent-color: var(--ok); width: 16px; height: 16px; margin: 0; }
   .chk:has(input:checked) { border-color: var(--ok); }
   .hint { margin: 0; font-size: 13px; color: var(--muted); }
+  .hint.warn { color: var(--warn); }
 
   .size { display: flex; align-items: center; gap: 12px; }
-  .size input { flex: 1; accent-color: var(--ok); }
-  .size output { font: 600 15px/1 var(--display); min-width: 4.5ch; text-align: right; }
+  .size input { flex: 1; min-width: 0; accent-color: var(--ok); }
+  .size output { font: 600 15px/1 var(--display); min-width: 5ch; text-align: right; color: var(--ink); }
   .colors { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; }
   .color { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
   .color input { width: 40px; height: 30px; padding: 0; border: 1px solid var(--line); border-radius: 6px; background: none; cursor: pointer; }
@@ -68,6 +77,7 @@
   .btn.primary { background: var(--ok); border-color: var(--ok); color: #06222e; }
   .btn.primary:hover { filter: brightness(1.08); }
   .btn.grow { flex: 1 1 200px; }
+  .btn.sm { padding: 9px 12px; font-size: 13px; }
   .msg { margin: 0; font-size: 14px; color: var(--warn); }
   .linkish { background: none; border: 0; padding: 0; font: inherit; color: var(--muted); text-decoration: underline; cursor: pointer; }
   .linkish:hover, .linkish:focus-visible { color: var(--ink); }
@@ -77,16 +87,68 @@
   .how li::marker { color: var(--ok); font-weight: 600; }
   .how .note { margin: 12px 0 0; color: var(--muted); font-size: 14px; max-width: 64ch; }
   kbd { font-family: var(--display); font-size: 12px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px; color: var(--ink); }
+
+  /* ---------- แท็บ 2: นับถอยหลังเต็มจอ ---------- */
+  #tab-cd { flex: 1; display: flex; min-height: 420px; }
+  #tab-cd[hidden] { display: none; }
+  .cd { --cbg: #000000; --cfg: #ffffff; --cwarn: #ffb020; --cover: #ff5a4e; --s: .8; --n: 5;
+    position: relative; flex: 1; display: grid; place-items: center; overflow: hidden;
+    background: var(--cbg); color: var(--cfg); container-type: size; transition: background .3s; }
+  .cd-digits { font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif; font-weight: 600; font-variant-numeric: tabular-nums lining-nums; line-height: 1; white-space: nowrap;
+    font-size: calc(min(94cqw / (var(--n) * .6), 82cqh) * var(--s)); transition: color .3s; }
+  .cd[data-c="warn"] .cd-digits { color: var(--cwarn); }
+  .cd[data-c="over"] .cd-digits { color: var(--cover); }
+  .cd[data-st="done"] .cd-digits { animation: blink 1s steps(1, end) infinite; }
+  @keyframes blink { 50% { opacity: .12; } }
+  .cd-state { position: absolute; left: 16px; bottom: 12px; font-size: 13px; opacity: .45; }
+
+  .cd-ctrl { position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; transition: opacity .4s; }
+  .ib { width: 38px; height: 38px; display: grid; place-items: center; padding: 0; border-radius: 9px; cursor: pointer;
+    color: var(--cfg); background: color-mix(in srgb, var(--cfg) 8%, transparent); border: 1px solid color-mix(in srgb, var(--cfg) 22%, transparent); }
+  .ib:hover { background: color-mix(in srgb, var(--cfg) 18%, transparent); }
+  .ib:focus-visible { outline: 2px solid var(--cfg); outline-offset: 2px; }
+  .ib[aria-pressed="true"] { background: color-mix(in srgb, var(--cfg) 26%, transparent); border-color: color-mix(in srgb, var(--cfg) 55%, transparent); }
+  .ib svg { width: 18px; height: 18px; }
+  .ib .sep { width: 1px; }
+  .cd-ctrl .gap { width: 6px; }
+  .cd.dim .cd-ctrl { opacity: .15; }
+  .cd.dim .cd-state { opacity: 0; }
+  .cd.dim { cursor: none; }
+
+  .drawer { position: absolute; top: 60px; right: 12px; width: min(340px, calc(100% - 24px)); max-height: calc(100% - 72px); overflow: auto; box-sizing: border-box;
+    background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 16px; box-shadow: 0 18px 40px rgba(0,0,0,.45); cursor: auto; }
+  .drawer[hidden] { display: none; }
+  .drawer .sec { display: grid; gap: 10px; }
+  .drawer .sec + .sec { border-top: 1px solid var(--line); padding-top: 14px; }
+  .drawer .fields { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .drawer .num input { font-size: 18px; padding: 8px 6px; }
+  .drawer .num button { width: 34px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { border: 1px solid var(--line); background: var(--screen); color: var(--ink); border-radius: 999px; padding: 5px 11px; font: 600 13px/1.2 var(--body); cursor: pointer; }
+  .chip:hover { border-color: var(--muted); }
+  .row2 { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cd[data-st="done"] .cd-digits { animation: none; }
+    .cd, .cd-digits, .cd-ctrl { transition: none; }
+  }
 </style>
 
 <style>body{margin:0}</style>
 </head>
 <body>
+<header class="topbar">
+  <h1 class="brand">นาฬิกาจับเวลานำเสนอ</h1>
+  <div class="tabs" role="tablist" aria-label="โหมด">
+    <button class="tab" role="tab" id="t-float" aria-controls="tab-float" aria-selected="true">หน้าต่างลอย</button>
+    <button class="tab" role="tab" id="t-cd" aria-controls="tab-cd" aria-selected="false">นับถอยหลังเต็มจอ</button>
+  </div>
+</header>
+
+<!-- ===================== แท็บ 1 ===================== -->
+<main id="tab-float" role="tabpanel" aria-labelledby="t-float">
 <div class="wrap">
-  <header>
-    <h1>นาฬิกาจับเวลานำเสนอ</h1>
-    <p>หน้าต่างจับเวลาเล็ก ๆ ที่ลอยทับสไลด์ ผู้เข้าประชุมใน Zoom เห็นได้เมื่อแชร์ทั้งหน้าจอ</p>
-  </header>
+  <p class="lead">หน้าต่างจับเวลาเล็ก ๆ ที่ลอยทับสไลด์ ผู้เข้าประชุมใน Zoom เห็นได้เมื่อแชร์ทั้งหน้าจอ</p>
 
   <section class="preview" aria-label="ตัวอย่างหน้าต่างลอย">
     <div class="cap">หน้าตาหน้าต่างลอย (ขนาดจริง)</div>
@@ -125,14 +187,16 @@
       <div class="checks">
         <label class="chk"><input type="checkbox" id="show-k" checked> คำกำกับ (ใช้ไป / เหลือ / เวลา)</label>
         <label class="chk"><input type="checkbox" id="show-bar" checked> แถบความคืบหน้า</label>
+        <label class="chk"><input type="checkbox" id="show-tg" checked> ปุ่ม ▶ ในหน้าต่างลอย</label>
       </div>
-      <p class="hint" id="show-hint" hidden>ต้องเลือกอย่างน้อย 1 อย่าง</p>
+      <p class="hint warn" id="show-hint" hidden>ต้องเลือกอย่างน้อย 1 อย่าง</p>
+      <p class="hint">อยากได้หน้าต่างเล็กที่สุด: ปิดคำกำกับ แถบความคืบหน้า และปุ่ม ▶ แล้วลดขนาดตัวเลข (เมื่อปิดปุ่ม ▶ ให้เริ่ม/หยุดจากหน้านี้แทน)</p>
     </div>
 
     <div class="group">
       <h2>ขนาดและสี</h2>
       <label class="f" for="fs">ขนาดตัวเลข
-        <span class="size"><input type="range" id="fs" min="12" max="72" step="1" value="24"><output id="fs-out" for="fs">24 px</output></span>
+        <span class="size"><input type="range" id="fs" min="8" max="72" step="1" value="24"><output id="fs-out" for="fs">24 px</output></span>
       </label>
       <div class="colors">
         <label class="color" for="bg">สีพื้น <input type="color" id="bg" value="#0a0e12"></label>
@@ -157,29 +221,134 @@
       <li>ใน Zoom กด <b>Share Screen</b> แล้วเลือก <b>Screen</b> (ทั้งหน้าจอ) อย่าเลือกแชร์หน้าต่าง PowerPoint อย่างเดียว</li>
       <li>เปิดสไลด์โชว์ แล้วกดปุ่ม ▶ จาง ๆ ท้ายหน้าต่างลอยเพื่อเริ่มจับเวลา</li>
     </ol>
-    <p class="note">ปรับขนาดหรือสีระหว่างที่หน้าต่างลอยเปิดอยู่ได้ หน้าต่างจะเปลี่ยนตามทันที เมื่อเวลาหมด เวลาที่เหลือจะเปลี่ยนเป็นสีแดงและนับเวลาที่เกินต่อ คีย์ลัดบนหน้านี้: <kbd>Space</kbd> เริ่ม/หยุด, <kbd>R</kbd> รีเซ็ต · ใช้ได้กับ Chrome หรือ Edge บนคอมพิวเตอร์ ระบบจำค่าที่ตั้งไว้ในเบราว์เซอร์นี้</p>
+    <p class="note">เบราว์เซอร์กำหนดขนาดเล็กสุดของหน้าต่างลอยไว้ และมีแถบชื่อเว็บด้านบนที่ปิดไม่ได้ ถ้าตัวเลขเล็กกว่าหน้าต่าง จะเห็นพื้นรอบตัวเลขกว้างขึ้น คีย์ลัดในแท็บนี้: <kbd>Space</kbd> เริ่ม/หยุด, <kbd>R</kbd> รีเซ็ต · ใช้ได้กับ Chrome หรือ Edge บนคอมพิวเตอร์</p>
   </section>
 </div>
+</main>
+
+<!-- ===================== แท็บ 2 ===================== -->
+<section id="tab-cd" role="tabpanel" aria-labelledby="t-cd" hidden>
+  <div class="cd" id="cd" data-st="idle" data-c="ok">
+    <div class="cd-digits" id="cd-digits" aria-live="off">05:00</div>
+    <div class="cd-state" id="cd-state">พร้อม · กด ▶ เพื่อเริ่ม</div>
+
+    <div class="cd-ctrl" id="cd-ctrl" role="toolbar" aria-label="ควบคุมการนับถอยหลัง">
+      <button class="ib" id="cd-play" title="เริ่ม (Space)" aria-label="เริ่ม"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></button>
+      <button class="ib" id="cd-pause" title="พัก (Space)" aria-label="พัก"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4.5" width="4" height="15" rx="1"/><rect x="14" y="4.5" width="4" height="15" rx="1"/></svg></button>
+      <button class="ib" id="cd-stop" title="หยุด (S) หยุดนับและหยุดเสียง กด ▶ จะเริ่มใหม่ตั้งแต่ต้น" aria-label="หยุด"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="5.5" y="5.5" width="13" height="13" rx="1.5"/></svg></button>
+      <button class="ib" id="cd-reset" title="รีเซ็ต (R) กลับไปเวลาที่ตั้งไว้" aria-label="รีเซ็ต"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5"/><path d="M4.5 3.5v4.5H9"/></svg></button>
+      <span class="gap"></span>
+      <button class="ib" id="cd-fs" title="เต็มจอ (F)" aria-label="เต็มจอ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+      <button class="ib" id="cd-set" title="ตั้งค่า" aria-label="ตั้งค่า" aria-expanded="false" aria-controls="cd-drawer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg></button>
+    </div>
+
+    <div class="drawer" id="cd-drawer" hidden>
+      <div class="sec">
+        <h3>เวลาที่นับถอยหลัง</h3>
+        <div class="fields">
+          <label class="f" for="cd-min">นาที
+            <span class="num">
+              <button type="button" id="cd-min-dn" aria-label="ลด 1 นาที">−</button>
+              <input id="cd-min" type="number" inputmode="numeric" min="0" max="599" step="1" value="5">
+              <button type="button" id="cd-min-up" aria-label="เพิ่ม 1 นาที">+</button>
+            </span>
+          </label>
+          <label class="f" for="cd-sec">วินาที
+            <span class="num">
+              <button type="button" id="cd-sec-dn" aria-label="ลด 5 วินาที">−</button>
+              <input id="cd-sec" type="number" inputmode="numeric" min="0" max="59" step="1" value="0">
+              <button type="button" id="cd-sec-up" aria-label="เพิ่ม 5 วินาที">+</button>
+            </span>
+          </label>
+        </div>
+        <div class="chips" id="cd-presets" aria-label="เวลาสำเร็จรูป"></div>
+      </div>
+
+      <div class="sec">
+        <h3>ขนาดและสี</h3>
+        <label class="f" for="cd-size">ขนาดตัวเลข
+          <span class="size"><input type="range" id="cd-size" min="15" max="100" step="1" value="80"><output id="cd-size-out" for="cd-size">80%</output></span>
+        </label>
+        <div class="colors">
+          <label class="color" for="cd-bg">สีพื้น <input type="color" id="cd-bg" value="#000000"></label>
+          <label class="color" for="cd-fg">สีตัวเลข <input type="color" id="cd-fg" value="#ffffff"></label>
+        </div>
+        <div class="swatches" id="cd-swatches" aria-label="ชุดสีสำเร็จรูป"></div>
+      </div>
+
+      <div class="sec">
+        <h3>เสียง</h3>
+        <label class="chk"><input type="checkbox" id="cd-end" checked> ส่งเสียงเมื่อหมดเวลา</label>
+        <label class="f" for="cd-warn">เสียงเตือนเมื่อเหลือ (วินาที) · ใส่ 0 = ไม่เตือน
+          <span class="num">
+            <button type="button" id="cd-warn-dn" aria-label="ลด 10 วินาที">−</button>
+            <input id="cd-warn" type="number" inputmode="numeric" min="0" max="3600" step="1" value="60">
+            <button type="button" id="cd-warn-up" aria-label="เพิ่ม 10 วินาที">+</button>
+          </span>
+        </label>
+        <label class="f" for="cd-vol">ความดัง
+          <span class="size"><input type="range" id="cd-vol" min="5" max="100" step="5" value="70"><output id="cd-vol-out" for="cd-vol">70%</output></span>
+        </label>
+        <div class="row2">
+          <button type="button" class="btn sm" id="cd-test-warn">ทดสอบเสียงเตือน</button>
+          <button type="button" class="btn sm" id="cd-test-end">ทดสอบเสียงหมดเวลา</button>
+        </div>
+        <p class="hint">เมื่อถึงเวลาเตือน ตัวเลขจะเป็นสีส้มด้วย หมดเวลาแล้วตัวเลขค้างที่ 00:00 เป็นสีแดงกะพริบ จนกว่าจะกดหยุดหรือรีเซ็ต</p>
+      </div>
+
+      <p class="hint">คีย์ลัด: <kbd>Space</kbd> เริ่ม/พัก · <kbd>S</kbd> หยุด · <kbd>R</kbd> รีเซ็ต · <kbd>F</kbd> เต็มจอ</p>
+    </div>
+  </div>
+</section>
 
 <script>
 (() => {
   const $ = (id) => document.getElementById(id);
   const MIN = 60000;
+  const pad = (n) => String(n).padStart(2, "0");
+  const clock = (sec) => {
+    const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+    return h ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+  };
+  const load = (key, def) => { const o = { ...def }; try { Object.assign(o, JSON.parse(localStorage.getItem(key) || "{}")); } catch (e) {} return o; };
+  const store = (key, o) => { try { localStorage.setItem(key, JSON.stringify(o)); } catch (e) {} };
+  function lum(hex) {
+    const n = parseInt(hex.slice(1), 16);
+    const ch = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; });
+    return .2126 * ch[0] + .7152 * ch[1] + .0722 * ch[2];
+  }
+  const typing = (e) => e.target.closest && e.target.closest("input, button, select, textarea");
 
-  // ---------- ค่าตั้ง ----------
-  const DEF = { min: 20, warn: 2, fs: 24, bg: "#0a0e12", fg: "#e7edf2", e: true, r: true, c: false, k: true, bar: true };
-  const O = { ...DEF };
-  try { Object.assign(O, JSON.parse(localStorage.getItem("stageTimer2") || "{}")); } catch (e) {}
-  const save = () => { try { localStorage.setItem("stageTimer2", JSON.stringify(O)); } catch (e) {} };
+  // =================== แท็บ ===================
+  let activeTab = "float";
+  function showTab(name, focus) {
+    activeTab = name;
+    $("t-float").setAttribute("aria-selected", name === "float");
+    $("t-cd").setAttribute("aria-selected", name === "cd");
+    $("tab-float").hidden = name !== "float";
+    $("tab-cd").hidden = name !== "cd";
+    try { history.replaceState(null, "", name === "cd" ? "#countdown" : "#float"); } catch (e) {}
+    try { localStorage.setItem("stageTab", name); } catch (e) {}
+    if (focus) $(name === "cd" ? "t-cd" : "t-float").focus();
+    if (name === "cd") cdPaint();
+  }
+  $("t-float").onclick = () => showTab("float");
+  $("t-cd").onclick = () => showTab("cd");
+  document.querySelector(".tabs").addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); showTab(activeTab === "float" ? "cd" : "float", true); }
+  });
 
+  // =================== แท็บ 1: หน้าต่างลอย ===================
+  const DEF = { min: 20, warn: 2, fs: 24, bg: "#0a0e12", fg: "#e7edf2", e: true, r: true, c: false, k: true, bar: true, tg: true };
+  const O = load("stageTimer2", DEF);
+  const save = () => store("stageTimer2", O);
   const T = { acc: 0, t0: 0, running: false };
   const total = () => O.min * MIN;
 
-  // ---------- หน้าตาตัวจับเวลา (ใช้ร่วมกันทั้งตัวอย่างและหน้าต่างลอย) ----------
   const TW_CSS = `
     .tw{--fs:24px;--bg:#0a0e12;--fg:#e7edf2;--warn:#ffb020;--over:#ff5a4e;--rc:var(--fg);
       position:relative;display:inline-block;box-sizing:border-box;background:var(--bg);color:var(--fg);
-      font-size:var(--fs);line-height:1;padding:.38em .6em .5em;white-space:nowrap;transform-origin:center}
+      font-size:var(--fs);line-height:1;padding:.36em .55em .48em;white-space:nowrap;transform-origin:center}
     .tw[data-c="warn"]{--rc:var(--warn)}
     .tw[data-c="over"]{--rc:var(--over)}
     .tw .row{display:flex;align-items:baseline;gap:.7em}
@@ -191,8 +360,10 @@
     .tw .bar i{display:block;height:100%;width:0;background:var(--rc);transition:width .25s linear}
     .tw .tg{align-self:center;border:0;border-radius:4px;background:transparent;color:inherit;opacity:.28;font:.42em/1 system-ui,sans-serif;padding:.25em .35em;margin-left:-.3em;cursor:pointer}
     .tw .tg:hover,.tw .tg:focus-visible{opacity:1;background:color-mix(in srgb,var(--fg) 15%,transparent);outline:none}
-    .tw.no-e [data-show="e"],.tw.no-r [data-show="r"],.tw.no-c [data-show="c"],.tw.no-k .k,.tw.no-bar .bar{display:none}
-    .tw.no-bar{padding-bottom:.38em}
+    .tw.no-e [data-show="e"],.tw.no-r [data-show="r"],.tw.no-c [data-show="c"],.tw.no-k .k,.tw.no-bar .bar,.tw.no-tg .tg{display:none}
+    .tw.no-k .row{gap:.5em}
+    .tw.no-bar{padding-bottom:.36em}
+    .tw.no-k.no-bar{padding:.2em .32em}
     @media (prefers-reduced-motion:reduce){.tw .bar i{transition:none}}`;
   const TW_HTML = `
     <div class="tw" data-c="ok">
@@ -210,12 +381,6 @@
   document.head.append(st);
   $("stage").innerHTML = TW_HTML;
 
-  // สีเตือนที่อ่านออกทั้งบนพื้นมืดและพื้นสว่าง
-  function lum(hex) {
-    const n = parseInt(hex.slice(1), 16);
-    const ch = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; });
-    return .2126 * ch[0] + .7152 * ch[1] + .0722 * ch[2];
-  }
   function styleWidget(tw) {
     const light = lum(O.bg) > .35;
     tw.style.setProperty("--fs", O.fs + "px");
@@ -223,17 +388,10 @@
     tw.style.setProperty("--fg", O.fg);
     tw.style.setProperty("--warn", light ? "#b35f00" : "#ffb020");
     tw.style.setProperty("--over", light ? "#c62828" : "#ff5a4e");
-    for (const k of ["e", "r", "c", "k", "bar"]) tw.classList.toggle("no-" + k, !O[k]);
+    for (const k of ["e", "r", "c", "k", "bar", "tg"]) tw.classList.toggle("no-" + k, !O[k]);
   }
 
-  // ---------- เวลา ----------
   const elapsed = () => T.acc + (T.running ? Date.now() - T.t0 : 0);
-  const pad = (n) => String(n).padStart(2, "0");
-  const clock = (sec) => {
-    const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
-    return h ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
-  };
-
   function snapshot() {
     const e = elapsed(), rem = total() - e;
     const over = rem <= 0 && e > 0;
@@ -249,7 +407,6 @@
       tot: O.min + " นาที",
     };
   }
-
   function fill(root, v) {
     const set = (k, t) => root.querySelectorAll(`[data-f="${k}"]`).forEach((n) => { if (n.textContent !== t) n.textContent = t; });
     set("e", v.e); set("r", v.r); set("rl", v.rl); set("c", v.c); set("st", v.st); set("tot", v.tot);
@@ -259,7 +416,6 @@
   }
 
   let pipWin = null, video = null, canvas = null;
-
   function fitPip() {
     if (!pipWin) return;
     const tw = pipWin.document.querySelector(".tw");
@@ -267,7 +423,6 @@
     const s = Math.min(1, (pipWin.innerWidth - 2) / tw.offsetWidth, (pipWin.innerHeight - 2) / tw.offsetHeight);
     tw.style.transform = s < 1 ? `scale(${s})` : "";
   }
-
   function render() {
     const v = snapshot();
     fill(document, v);
@@ -276,36 +431,23 @@
     $("toggle").textContent = T.running ? "หยุดชั่วคราว" : elapsed() > 0 ? "ทำต่อ" : "เริ่ม";
     $("pip").textContent = pipWin || (video && document.pictureInPictureElement === video) ? "ปิดหน้าต่างลอย" : "เปิดหน้าต่างลอย";
   }
-
   function applyLook() {
     document.querySelectorAll(".tw").forEach(styleWidget);
     if (pipWin) {
       pipWin.document.querySelectorAll(".tw").forEach(styleWidget);
       pipWin.document.body.style.background = O.bg;
-      // พยายามปรับขนาดหน้าต่างให้พอดี ถ้าเบราว์เซอร์ไม่ยอม ตัวเลขจะย่อให้พอดีหน้าต่างแทน
       const tw = document.querySelector("#stage .tw");
       try { pipWin.resizeTo(tw.offsetWidth + (pipWin.outerWidth - pipWin.innerWidth), tw.offsetHeight + (pipWin.outerHeight - pipWin.innerHeight)); } catch (e) {}
     }
     render();
   }
 
-  // ตัวจังหวะที่ไม่ถูกเบราว์เซอร์ชะลอเมื่อหน้าต่างถูกบัง
-  let fallbackTick = null;
-  const startFallback = () => { if (!fallbackTick) fallbackTick = setInterval(render, 250); };
-  try {
-    const w = new Worker(URL.createObjectURL(new Blob(["setInterval(()=>postMessage(0),250)"], { type: "text/javascript" })));
-    w.onmessage = render;
-    w.onerror = startFallback;
-  } catch (e) { startFallback(); }
-
-  // ---------- ควบคุม ----------
   function toggle() {
     if (T.running) { T.acc += Date.now() - T.t0; T.running = false; }
     else { T.t0 = Date.now(); T.running = true; }
     render();
   }
   function reset() { T.acc = 0; T.running = false; render(); }
-
   function setMin(m) { O.min = Math.max(1, Math.min(600, Math.round(m) || 1)); $("min").value = O.min; save(); render(); }
   function setWarn(m) { O.warn = Math.max(0, Math.min(60, Math.round(m) || 0)); $("warn").value = O.warn; save(); render(); }
 
@@ -319,8 +461,7 @@
   $("reset").onclick = reset;
   $("stage").addEventListener("click", (e) => { if (e.target.closest(".tg")) toggle(); });
 
-  // สิ่งที่แสดง
-  for (const k of ["e", "r", "c", "k", "bar"]) {
+  for (const k of ["e", "r", "c", "k", "bar", "tg"]) {
     const box = $("show-" + k);
     box.checked = !!O[k];
     box.addEventListener("change", () => {
@@ -330,8 +471,6 @@
       save(); applyLook();
     });
   }
-
-  // ขนาดและสี
   $("fs").value = O.fs; $("fs-out").textContent = O.fs + " px";
   $("fs").addEventListener("input", (e) => { O.fs = +e.target.value; $("fs-out").textContent = O.fs + " px"; applyLook(); });
   $("fs").addEventListener("change", save);
@@ -348,22 +487,18 @@
     { name: "เหลือง", bg: "#141414", fg: "#ffd23f" },
     { name: "เขียว", bg: "#0d2a1f", fg: "#b8f5d0" },
   ];
-  for (const p of PRESETS) {
-    const b = document.createElement("button");
-    b.type = "button"; b.className = "swatch"; b.textContent = "12:34";
-    b.title = p.name; b.setAttribute("aria-label", "ชุดสี" + p.name);
-    b.style.background = p.bg; b.style.color = p.fg;
-    b.onclick = () => { O.bg = p.bg; O.fg = p.fg; $("bg").value = p.bg; $("fg").value = p.fg; save(); applyLook(); };
-    $("swatches").append(b);
+  function swatches(host, onPick) {
+    for (const p of PRESETS) {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "swatch"; b.textContent = "12:34";
+      b.title = p.name; b.setAttribute("aria-label", "ชุดสี" + p.name);
+      b.style.background = p.bg; b.style.color = p.fg;
+      b.onclick = () => onPick(p);
+      host.append(b);
+    }
   }
+  swatches($("swatches"), (p) => { O.bg = p.bg; O.fg = p.fg; $("bg").value = p.bg; $("fg").value = p.fg; save(); applyLook(); });
 
-  document.addEventListener("keydown", (e) => {
-    if (e.target.closest && e.target.closest("input, button")) return;
-    if (e.code === "Space") { e.preventDefault(); toggle(); }
-    else if (e.key === "r" || e.key === "R" || e.key === "พ") reset();
-  });
-
-  // ---------- หน้าต่างลอย ----------
   async function openDocPip() {
     const tw = document.querySelector("#stage .tw");
     const w = await window.documentPictureInPicture.requestWindow({ width: Math.ceil(tw.offsetWidth), height: Math.ceil(tw.offsetHeight) });
@@ -387,7 +522,6 @@
     render();
   }
 
-  // ทางสำรอง: วาดลงแคนวาสแล้วส่งเป็นวิดีโอ Picture-in-Picture
   function draw(v) {
     const ctx = canvas.getContext("2d"), W = canvas.width, H = canvas.height;
     const light = lum(O.bg) > .35;
@@ -415,7 +549,6 @@
     }
     if (O.bar) { ctx.globalAlpha = .18; ctx.fillStyle = O.fg; ctx.fillRect(0, H - 5, W, 5); ctx.globalAlpha = 1; ctx.fillStyle = rc; ctx.fillRect(0, H - 5, W * v.pct / 100, 5); }
   }
-
   async function openVideoPip() {
     if (!canvas) {
       canvas = document.createElement("canvas");
@@ -432,7 +565,6 @@
     await video.requestPictureInPicture();
     render();
   }
-
   function showMsg(t, withFallback) {
     const m = $("msg");
     m.textContent = t;
@@ -446,27 +578,226 @@
     m.hidden = !t;
   }
   const canVideoPip = () => document.pictureInPictureEnabled && !!HTMLCanvasElement.prototype.captureStream;
-
   $("pip").onclick = async () => {
     showMsg("");
     if (pipWin) { pipWin.close(); return; }
     if (video && document.pictureInPictureElement === video) { await document.exitPictureInPicture(); return; }
-    try {
-      if ("documentPictureInPicture" in window) { await openDocPip(); return; }
-    } catch (e) {}
+    try { if ("documentPictureInPicture" in window) { await openDocPip(); return; } } catch (e) {}
     if (window.top !== window.self) {
       showMsg("หน้านี้ถูกฝังอยู่ในเว็บอื่น (เช่น Google Sites) เบราว์เซอร์จึงไม่ยอมเปิดหน้าต่างลอยขนาดเล็ก ให้เปิดลิงก์หรือไฟล์นี้ด้วย Chrome หรือ Edge โดยตรง", canVideoPip());
       return;
     }
-    try {
-      if (canVideoPip()) { await openVideoPip(); return; }
-    } catch (e) {}
+    try { if (canVideoPip()) { await openVideoPip(); return; } } catch (e) {}
     showMsg("เปิดหน้าต่างลอยจากหน้านี้ไม่ได้ ให้เปิดด้วย Chrome หรือ Edge บนคอมพิวเตอร์แทน");
   };
 
+  // =================== แท็บ 2: นับถอยหลังเต็มจอ ===================
+  const CDEF = { min: 5, sec: 0, size: 80, bg: "#000000", fg: "#ffffff", end: true, warn: 60, vol: 70 };
+  const C = load("stageCountdown", CDEF);
+  const csave = () => store("stageCountdown", C);
+  const CT = { st: "idle", acc: 0, t0: 0, warned: false };
+  const cdDur = () => (C.min * 60 + C.sec) * 1000;
+  const cdElapsed = () => CT.acc + (CT.st === "run" ? Date.now() - CT.t0 : 0);
+  const cd = $("cd");
+
+  // เสียง (สร้างด้วย Web Audio ไม่ต้องโหลดไฟล์เสียง)
+  let actx = null, voices = [];
+  function audio() {
+    if (!actx) { const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; try { actx = new AC(); } catch (e) { return null; } }
+    if (actx.state === "suspended") actx.resume();
+    return actx;
+  }
+  const level = () => Math.max(.001, (C.vol / 100) ** 2 * .9);
+  function beep(t, f, d, v) {
+    const a = actx, o = a.createOscillator(), g = a.createGain();
+    o.type = "sine"; o.frequency.value = f;
+    g.gain.setValueAtTime(.0001, t);
+    g.gain.exponentialRampToValueAtTime(v, t + .012);
+    g.gain.exponentialRampToValueAtTime(.0001, t + d);
+    o.connect(g).connect(a.destination);
+    o.start(t); o.stop(t + d + .03);
+    voices.push(o);
+    o.onended = () => { voices = voices.filter((x) => x !== o); };
+  }
+  function warnSound() { const a = audio(); if (!a) return; const t = a.currentTime + .03, v = level(); beep(t, 1046, .2, v); beep(t + .28, 1318, .28, v); }
+  function endSound() {
+    const a = audio(); if (!a) return; const t = a.currentTime + .03, v = level();
+    for (let r = 0; r < 4; r++) for (let i = 0; i < 3; i++) beep(t + r * .9 + i * .17, 880, .13, v);
+  }
+  function silence() { voices.forEach((o) => { try { o.stop(); } catch (e) {} }); voices = []; }
+
+  function cdPlay() {
+    audio(); // ปลดล็อกเสียงด้วยการกดของผู้ใช้
+    if (CT.st === "run") return;
+    if (CT.st === "done" || CT.st === "stopped") { CT.acc = 0; CT.warned = false; silence(); }
+    if (cdDur() <= 0) { openDrawer(true); return; }
+    CT.t0 = Date.now(); CT.st = "run"; cdPaint(); wake();
+  }
+  function cdPause() { if (CT.st !== "run") return; CT.acc += Date.now() - CT.t0; CT.st = "pause"; cdPaint(); }
+  function cdStop() {
+    silence();
+    if (CT.st === "run") CT.acc += Date.now() - CT.t0;
+    if (CT.st !== "idle") CT.st = "stopped";
+    cdPaint();
+  }
+  function cdReset() { silence(); CT.acc = 0; CT.warned = false; CT.st = "idle"; cdPaint(); }
+  function cdToggle() { CT.st === "run" ? cdPause() : cdPlay(); }
+
+  function cdTick() {
+    if (CT.st !== "run") return;
+    const rem = cdDur() - cdElapsed();
+    if (!CT.warned && C.warn > 0 && cdDur() > C.warn * 1000 && rem <= C.warn * 1000) { CT.warned = true; warnSound(); }
+    if (rem <= 0) { CT.acc = cdDur(); CT.st = "done"; if (C.end) endSound(); }
+    cdPaint();
+  }
+
+  const STATE_TEXT = { idle: "พร้อม · กด ▶ เพื่อเริ่ม", run: "", pause: "พักอยู่ · กด ▶ เพื่อนับต่อ", stopped: "หยุดแล้ว · กด ▶ เพื่อเริ่มใหม่ หรือ ↺ เพื่อรีเซ็ต", done: "หมดเวลา" };
+  function cdPaint() {
+    const rem = Math.max(0, cdDur() - cdElapsed());
+    const txt = clock(Math.ceil(rem / 1000));
+    const el = $("cd-digits");
+    if (el.textContent !== txt) el.textContent = txt;
+    cd.style.setProperty("--n", txt.length);
+    cd.dataset.st = CT.st;
+    cd.dataset.c = CT.st === "done" ? "over"
+      : (CT.st === "run" || CT.st === "pause") && C.warn > 0 && rem <= C.warn * 1000 && cdDur() > C.warn * 1000 ? "warn" : "ok";
+    $("cd-state").textContent = STATE_TEXT[CT.st];
+    $("cd-play").setAttribute("aria-pressed", CT.st === "run");
+    $("cd-pause").setAttribute("aria-pressed", CT.st === "pause");
+  }
+  function cdLook() {
+    const light = lum(C.bg) > .35;
+    cd.style.setProperty("--cbg", C.bg);
+    cd.style.setProperty("--cfg", C.fg);
+    cd.style.setProperty("--cwarn", light ? "#b35f00" : "#ffb020");
+    cd.style.setProperty("--cover", light ? "#c62828" : "#ff5a4e");
+    cd.style.setProperty("--s", C.size / 100);
+    cdPaint();
+  }
+
+  // ปุ่มควบคุม
+  $("cd-play").onclick = cdPlay;
+  $("cd-pause").onclick = cdPause;
+  $("cd-stop").onclick = cdStop;
+  $("cd-reset").onclick = cdReset;
+  function toggleFs() {
+    if (document.fullscreenElement) { document.exitFullscreen?.().catch(() => {}); return; }
+    const p = cd.requestFullscreen?.();
+    if (p && p.catch) p.catch(() => {});
+  }
+  $("cd-fs").onclick = toggleFs;
+  document.addEventListener("fullscreenchange", () => {
+    const on = document.fullscreenElement === cd;
+    $("cd-fs").setAttribute("aria-pressed", on);
+    $("cd-fs").title = on ? "ออกจากเต็มจอ (F หรือ Esc)" : "เต็มจอ (F)";
+  });
+  function openDrawer(force) {
+    const d = $("cd-drawer");
+    const open = force === true ? true : d.hidden;
+    d.hidden = !open;
+    $("cd-set").setAttribute("aria-expanded", open);
+    $("cd-set").setAttribute("aria-pressed", open);
+    wake();
+  }
+  $("cd-set").onclick = () => openDrawer();
+  cd.addEventListener("click", (e) => {
+    const d = $("cd-drawer");
+    if (!d.hidden && !e.target.closest(".drawer, .cd-ctrl")) openDrawer();
+  });
+
+  // ซ่อนปุ่มให้จางลงเมื่อไม่ได้ขยับเมาส์
+  let idleT = null;
+  function wake() {
+    cd.classList.remove("dim");
+    clearTimeout(idleT);
+    idleT = setTimeout(() => { if (CT.st === "run" && $("cd-drawer").hidden) cd.classList.add("dim"); }, 2500);
+  }
+  cd.addEventListener("pointermove", wake);
+  cd.addEventListener("pointerdown", wake);
+
+  // ตั้งเวลา
+  function setCd(min, sec) {
+    let total = Math.max(0, Math.round(min) * 60 + Math.round(sec));
+    total = Math.min(total, 599 * 60 + 59);
+    C.min = Math.floor(total / 60); C.sec = total % 60;
+    $("cd-min").value = C.min; $("cd-sec").value = C.sec;
+    csave(); cdPaint();
+  }
+  $("cd-min").addEventListener("change", (e) => setCd(+e.target.value || 0, C.sec));
+  $("cd-sec").addEventListener("change", (e) => setCd(C.min, +e.target.value || 0));
+  $("cd-min-dn").onclick = () => setCd(C.min - 1, C.sec);
+  $("cd-min-up").onclick = () => setCd(C.min + 1, C.sec);
+  $("cd-sec-dn").onclick = () => setCd(C.min, C.sec - 5);
+  $("cd-sec-up").onclick = () => setCd(C.min, C.sec + 5);
+  for (const m of [1, 3, 5, 10, 15, 20, 30, 60]) {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.textContent = m + " นาที";
+    b.onclick = () => { setCd(m, 0); if (CT.st !== "run") cdReset(); };
+    $("cd-presets").append(b);
+  }
+
+  // ขนาดและสี
+  $("cd-size").value = C.size; $("cd-size-out").textContent = C.size + "%";
+  $("cd-size").addEventListener("input", (e) => { C.size = +e.target.value; $("cd-size-out").textContent = C.size + "%"; cdLook(); });
+  $("cd-size").addEventListener("change", csave);
+  $("cd-bg").value = C.bg; $("cd-fg").value = C.fg;
+  $("cd-bg").addEventListener("input", (e) => { C.bg = e.target.value; cdLook(); });
+  $("cd-fg").addEventListener("input", (e) => { C.fg = e.target.value; cdLook(); });
+  $("cd-bg").addEventListener("change", csave);
+  $("cd-fg").addEventListener("change", csave);
+  swatches($("cd-swatches"), (p) => { C.bg = p.bg; C.fg = p.fg; $("cd-bg").value = p.bg; $("cd-fg").value = p.fg; csave(); cdLook(); });
+
+  // เสียง
+  $("cd-end").checked = C.end;
+  $("cd-end").addEventListener("change", (e) => { C.end = e.target.checked; csave(); });
+  const setCdWarn = (s) => { C.warn = Math.max(0, Math.min(3600, Math.round(s) || 0)); $("cd-warn").value = C.warn; csave(); cdPaint(); };
+  $("cd-warn").value = C.warn;
+  $("cd-warn").addEventListener("change", (e) => setCdWarn(+e.target.value));
+  $("cd-warn-dn").onclick = () => setCdWarn(C.warn - 10);
+  $("cd-warn-up").onclick = () => setCdWarn(C.warn + 10);
+  $("cd-vol").value = C.vol; $("cd-vol-out").textContent = C.vol + "%";
+  $("cd-vol").addEventListener("input", (e) => { C.vol = +e.target.value; $("cd-vol-out").textContent = C.vol + "%"; });
+  $("cd-vol").addEventListener("change", csave);
+  $("cd-test-warn").onclick = () => { silence(); warnSound(); };
+  $("cd-test-end").onclick = () => { silence(); endSound(); };
+
+  // =================== คีย์ลัด ===================
+  document.addEventListener("keydown", (e) => {
+    if (typing(e) || e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = e.key.toLowerCase();
+    if (activeTab === "float") {
+      if (e.code === "Space") { e.preventDefault(); toggle(); }
+      else if (k === "r" || k === "พ") reset();
+    } else {
+      if (e.code === "Space") { e.preventDefault(); cdToggle(); }
+      else if (k === "r" || k === "พ") cdReset();
+      else if (k === "s" || k === "ห") cdStop();
+      else if (k === "f" || k === "ด") toggleFs();
+      wake();
+    }
+  });
+
+  // =================== ตัวจังหวะ (ไม่ถูกชะลอเมื่อหน้าต่างถูกบัง) ===================
+  const tick = () => { render(); cdTick(); };
+  let fallbackTick = null;
+  const startFallback = () => { if (!fallbackTick) fallbackTick = setInterval(tick, 250); };
+  try {
+    const w = new Worker(URL.createObjectURL(new Blob(["setInterval(()=>postMessage(0),200)"], { type: "text/javascript" })));
+    w.onmessage = tick;
+    w.onerror = startFallback;
+  } catch (e) { startFallback(); }
+
+  // =================== เริ่มต้น ===================
   $("min").value = O.min;
   $("warn").value = O.warn;
+  $("cd-min").value = C.min; $("cd-sec").value = C.sec;
   applyLook();
+  cdLook();
+  let first = "float";
+  try { first = localStorage.getItem("stageTab") || "float"; } catch (e) {}
+  if (location.hash === "#countdown") first = "cd";
+  else if (location.hash === "#float") first = "float";
+  showTab(first === "cd" ? "cd" : "float");
 })();
 </script>
 </body>
